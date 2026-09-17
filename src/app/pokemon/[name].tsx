@@ -37,29 +37,36 @@ export default function PokemonDetailScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.id}>#{pokemon.id}</Text>
+            <View style={styles.pokemonCard}>
+                <Text style={styles.id}>#{pokemon.id}</Text>
 
-            <Text style={styles.title}>{pokemon.name}</Text>
+                <Text style={styles.title}>{pokemon.name}</Text>
 
-            <Image
-                source={{
-                    uri: pokemon.sprites.front_default ?? undefined,
-                }}
-                style={styles.image}
-            />
+                <Image
+                    source={{
+                        uri: pokemon.sprites.front_default ?? undefined,
+                    }}
+                    style={styles.image}
+                />
+            </View>
+
+            <Text style={styles.sectionTitle}>Información</Text>
 
             <View style={styles.infoContainer}>
                 <View style={styles.infoCard}>
+                    <Text style={styles.icon}>🔢</Text>
                     <Text style={styles.label}>ID</Text>
                     <Text style={styles.value}>{pokemon.id}</Text>
                 </View>
 
                 <View style={styles.infoCard}>
+                    <Text style={styles.icon}>📏</Text>
                     <Text style={styles.label}>Altura</Text>
                     <Text style={styles.value}>{pokemon.height}</Text>
                 </View>
 
                 <View style={styles.infoCard}>
+                    <Text style={styles.icon}>⚖️</Text>
                     <Text style={styles.label}>Peso</Text>
                     <Text style={styles.value}>{pokemon.weight}</Text>
                 </View>
@@ -71,7 +78,7 @@ export default function PokemonDetailScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
+        backgroundColor: "#f5f6fa",
         padding: 20,
         paddingTop: 40,
     },
@@ -80,22 +87,23 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "#f5f6fa",
         padding: 20,
     },
 
-    message: {
-        marginTop: 10,
-        fontSize: 16,
-    },
-
-    error: {
-        fontSize: 16,
-        textAlign: "center",
+    pokemonCard: {
+        backgroundColor: "#ffffff",
+        borderRadius: 25,
+        alignItems: "center",
+        paddingVertical: 25,
+        borderWidth: 1,
+        borderColor: "#e5e5e5",
     },
 
     id: {
         fontSize: 18,
         fontWeight: "bold",
+        color: "#999999",
     },
 
     title: {
@@ -103,33 +111,66 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textTransform: "capitalize",
         marginTop: 5,
+        color: "#222222",
     },
 
     image: {
-        width: 250,
-        height: 250,
-        marginVertical: 20,
+        width: 260,
+        height: 260,
+        marginTop: 10,
+    },
+
+    sectionTitle: {
+        fontSize: 22,
+        fontWeight: "bold",
+        marginTop: 25,
+        marginBottom: 12,
+        color: "#222222",
     },
 
     infoContainer: {
-        width: "100%",
-        gap: 12,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        gap: 10,
     },
 
     infoCard: {
-        padding: 15,
-        borderRadius: 12,
-        backgroundColor: "#eeeeee",
+        flex: 1,
+        backgroundColor: "#ffffff",
+        borderRadius: 16,
+        paddingVertical: 15,
         alignItems: "center",
+        borderWidth: 1,
+        borderColor: "#e5e5e5",
+    },
+
+    icon: {
+        fontSize: 24,
+        marginBottom: 5,
     },
 
     label: {
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: "bold",
+        color: "#777777",
     },
 
     value: {
         fontSize: 20,
+        fontWeight: "bold",
         marginTop: 4,
+        color: "#222222",
+    },
+
+    message: {
+        marginTop: 10,
+        fontSize: 16,
+        color: "#555555",
+    },
+
+    error: {
+        fontSize: 16,
+        color: "#cc0000",
+        textAlign: "center",
     },
 });

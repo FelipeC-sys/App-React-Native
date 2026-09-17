@@ -67,6 +67,7 @@ export default function HomeScreen() {
         <FlatList
           data={filteredPokemons}
           keyExtractor={(item) => item.name}
+          numColumns={2}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.list}
           renderItem={({ item }) => {
@@ -174,35 +175,27 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    flexDirection: "row",
-    alignItems: "center",
+    flex: 1,
     backgroundColor: "#ffffff",
     borderRadius: 18,
     padding: 12,
-    marginBottom: 14,
+    margin: 6,
 
     borderWidth: 1,
     borderColor: "#e5e5e5",
 
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-
-    shadowOpacity: 0.08,
-    shadowRadius: 5,
+    alignItems: "center",
 
     elevation: 3,
   },
-
   cardPressed: {
     opacity: 0.7,
     transform: [{ scale: 0.98 }],
   },
 
   imageContainer: {
-    width: 90,
-    height: 90,
+    width: 120,
+    height: 120,
     borderRadius: 15,
     backgroundColor: "#f0f0f0",
     justifyContent: "center",
@@ -216,7 +209,8 @@ const styles = StyleSheet.create({
   },
 
   cardInfo: {
-    flex: 1,
+    width: "100%",
+    alignItems: "center",
   },
 
   pokemonId: {

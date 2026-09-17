@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   FlatList,
+  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -37,17 +38,30 @@ export default function HomeScreen() {
       <FlatList
         data={pokemons}
         keyExtractor={(item) => item.name}
-        renderItem={({ item }) => (
-          <Pressable
-            style={styles.card}
-            onPress={() =>
-              router.push({
-                pathname: "/pokemon/[name]",
-                params: { name: item.name },
-              })
-            }          >
-            <Text style={styles.pokemonName}>{item.name}</Text>
-          </Pressable>)}
+        renderItem={({ item }) => {
+          const pokemonId = item.url.split("/").filter(Boolean).pop();
+
+          const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
+
+          return (
+            <Pressable
+              style={styles.card}
+              onPress={() =>
+                router.push({
+                  pathname: "/pokemon/[name]",
+                  params: { name: item.name },
+                })
+              }
+            >
+              <Image
+                source={{ uri: imageUrl }}
+                style={styles.image}
+              />
+
+              <Text style={styles.pokemonName}>{item.name}</Text>
+            </Pressable>
+          );
+        }}
       />
     </View>
   );
@@ -59,31 +73,45 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 60,
   },
+
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
+
   title: {
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 20,
   },
+
   message: {
     marginTop: 10,
     fontSize: 16,
   },
+
   error: {
     fontSize: 16,
     textAlign: "center",
   },
+
   card: {
-    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
     marginBottom: 10,
     borderRadius: 10,
     backgroundColor: "#eeeeee",
   },
+
+  image: {
+    width: 70,
+    height: 70,
+    marginRight: 15,
+  },
+
   pokemonName: {
     fontSize: 18,
     fontWeight: "600",

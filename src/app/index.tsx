@@ -1,10 +1,13 @@
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+
+import { router } from "expo-router";
 import { usePokemonList } from "../hooks/usePokemonList";
 
 export default function HomeScreen() {
@@ -35,10 +38,16 @@ export default function HomeScreen() {
         data={pokemons}
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
-          <View style={styles.card}>
+          <Pressable
+            style={styles.card}
+            onPress={() =>
+              router.push({
+                pathname: "/pokemon/[name]",
+                params: { name: item.name },
+              })
+            }          >
             <Text style={styles.pokemonName}>{item.name}</Text>
-          </View>
-        )}
+          </Pressable>)}
       />
     </View>
   );

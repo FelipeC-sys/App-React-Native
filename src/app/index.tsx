@@ -53,7 +53,11 @@ export default function HomeScreen() {
         value={search}
         onChangeText={(text) => setSearch(text)}
       />
-
+      {filteredPokemons.length === 0 && (
+        <Text style={styles.noResults}>
+          No se encontraron Pokémon.
+        </Text>
+      )}
       <FlatList
         data={filteredPokemons}
         keyExtractor={(item) => item.name}
@@ -151,7 +155,11 @@ const styles = StyleSheet.create({
     height: 70,
     marginRight: 15,
   },
-
+  noResults: {
+    textAlign: "center",
+    fontSize: 16,
+    marginTop: 20,
+  },
   pokemonName: {
     fontSize: 18,
     fontWeight: "600",

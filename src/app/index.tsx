@@ -5,20 +5,32 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 
 import { router } from "expo-router";
+import { useState } from "react";
 import { usePokemonList } from "../hooks/usePokemonList";
 
 export default function HomeScreen() {
   const { pokemons, loading, error } = usePokemonList();
 
+  const [search, setSearch] = useState("");
+
+  const filteredPokemons = pokemons.filter((pokemon) => {
+    return pokemon.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
+  });
+
   if (loading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" />
-        <Text style={styles.message}>Cargando Pokémon...</Text>
+        <Text style={styles.message}>
+          Cargando Pokémon...
+        </Text>
       </View>
     );
   }
@@ -35,13 +47,27 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Pokedex Lite</Text>
 
+      <TextInput
+        style={styles.search}
+        placeholder="Buscar Pokémon..."
+        value={search}
+        onChangeText={(text) => setSearch(text)}
+      />
+
       <FlatList
-        data={pokemons}
+        data={filteredPokemons}
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => {
-          const pokemonId = item.url.split("/").filter(Boolean).pop();
+          const pokemonId = item.url
+            .split("/")
+            .filter((part) => part !== "")
+            .pop();
 
-          const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
+          const imageUrl =
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/" +
+            "sprites/pokemon/" +
+            pokemonId +
+            ".png";
 
           return (
             <Pressable
@@ -49,7 +75,9 @@ export default function HomeScreen() {
               onPress={() =>
                 router.push({
                   pathname: "/pokemon/[name]",
-                  params: { name: item.name },
+                  params: {
+                    name: item.name,
+                  },
                 })
               }
             >
@@ -58,7 +86,9 @@ export default function HomeScreen() {
                 style={styles.image}
               />
 
-              <Text style={styles.pokemonName}>{item.name}</Text>
+              <Text style={styles.pokemonName}>
+                {item.name}
+              </Text>
             </Pressable>
           );
         }}
@@ -95,6 +125,16 @@ const styles = StyleSheet.create({
   error: {
     fontSize: 16,
     textAlign: "center",
+  },
+
+  search: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: "#cccccc",
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    marginBottom: 20,
+    fontSize: 16,
   },
 
   card: {

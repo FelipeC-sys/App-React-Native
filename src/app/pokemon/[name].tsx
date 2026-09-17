@@ -6,6 +6,7 @@ import {
     Text,
     View,
 } from "react-native";
+
 import { usePokemonDetail } from "../../hooks/usePokemonDetail";
 
 export default function PokemonDetailScreen() {
@@ -19,7 +20,7 @@ export default function PokemonDetailScreen() {
         return (
             <View style={styles.center}>
                 <ActivityIndicator size="large" />
-                <Text>Cargando Pokémon...</Text>
+                <Text style={styles.message}>Cargando Pokémon...</Text>
             </View>
         );
     }
@@ -27,23 +28,42 @@ export default function PokemonDetailScreen() {
     if (error || !pokemon) {
         return (
             <View style={styles.center}>
-                <Text>{error ?? "Pokémon no encontrado"}</Text>
+                <Text style={styles.error}>
+                    {error ?? "Pokémon no encontrado"}
+                </Text>
             </View>
         );
     }
 
     return (
         <View style={styles.container}>
+            <Text style={styles.id}>#{pokemon.id}</Text>
+
             <Text style={styles.title}>{pokemon.name}</Text>
 
             <Image
-                source={{ uri: pokemon.sprites.front_default ?? undefined }}
+                source={{
+                    uri: pokemon.sprites.front_default ?? undefined,
+                }}
                 style={styles.image}
             />
 
-            <Text style={styles.info}>ID: {pokemon.id}</Text>
-            <Text style={styles.info}>Altura: {pokemon.height}</Text>
-            <Text style={styles.info}>Peso: {pokemon.weight}</Text>
+            <View style={styles.infoContainer}>
+                <View style={styles.infoCard}>
+                    <Text style={styles.label}>ID</Text>
+                    <Text style={styles.value}>{pokemon.id}</Text>
+                </View>
+
+                <View style={styles.infoCard}>
+                    <Text style={styles.label}>Altura</Text>
+                    <Text style={styles.value}>{pokemon.height}</Text>
+                </View>
+
+                <View style={styles.infoCard}>
+                    <Text style={styles.label}>Peso</Text>
+                    <Text style={styles.value}>{pokemon.weight}</Text>
+                </View>
+            </View>
         </View>
     );
 }
@@ -52,26 +72,64 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
-        padding: 30,
-        paddingTop: 60,
+        padding: 20,
+        paddingTop: 40,
     },
+
     center: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        padding: 20,
     },
+
+    message: {
+        marginTop: 10,
+        fontSize: 16,
+    },
+
+    error: {
+        fontSize: 16,
+        textAlign: "center",
+    },
+
+    id: {
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+
     title: {
-        fontSize: 32,
+        fontSize: 36,
         fontWeight: "bold",
         textTransform: "capitalize",
+        marginTop: 5,
     },
+
     image: {
-        width: 200,
-        height: 200,
+        width: 250,
+        height: 250,
         marginVertical: 20,
     },
-    info: {
-        fontSize: 18,
-        marginVertical: 5,
+
+    infoContainer: {
+        width: "100%",
+        gap: 12,
+    },
+
+    infoCard: {
+        padding: 15,
+        borderRadius: 12,
+        backgroundColor: "#eeeeee",
+        alignItems: "center",
+    },
+
+    label: {
+        fontSize: 14,
+        fontWeight: "bold",
+    },
+
+    value: {
+        fontSize: 20,
+        marginTop: 4,
     },
 });

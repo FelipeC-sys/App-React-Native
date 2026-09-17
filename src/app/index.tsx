@@ -18,19 +18,15 @@ export default function HomeScreen() {
 
   const [search, setSearch] = useState("");
 
-  const filteredPokemons = pokemons.filter((pokemon) => {
-    return pokemon.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
-  });
+  const filteredPokemons = pokemons.filter((pokemon) =>
+    pokemon.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   if (loading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" />
-        <Text style={styles.message}>
-          Cargando Pokémon...
-        </Text>
+        <Text style={styles.message}>Cargando Pokémon...</Text>
       </View>
     );
   }
@@ -45,58 +41,86 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Pokedex Lite</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Pokedex Lite</Text>
+
+        <Text style={styles.subtitle}>
+          Explora todos los Pokémon
+        </Text>
+      </View>
 
       <TextInput
         style={styles.search}
-        placeholder="Buscar Pokémon..."
+        placeholder="🔎  Buscar Pokémon..."
+        placeholderTextColor="#888888"
         value={search}
         onChangeText={(text) => setSearch(text)}
       />
-      {filteredPokemons.length === 0 && (
-        <Text style={styles.noResults}>
-          No se encontraron Pokémon.
-        </Text>
+
+      {filteredPokemons.length === 0 ? (
+        <View style={styles.noResultsContainer}>
+          <Text style={styles.noResults}>
+            No se encontraron Pokémon.
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={filteredPokemons}
+          keyExtractor={(item) => item.name}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.list}
+          renderItem={({ item }) => {
+            const pokemonId = item.url
+              .split("/")
+              .filter(Boolean)
+              .pop();
+
+            const imageUrl =
+              "https://raw.githubusercontent.com/PokeAPI/sprites/master/" +
+              "sprites/pokemon/" +
+              pokemonId +
+              ".png";
+
+            return (
+              <Pressable
+                style={({ pressed }) => [
+                  styles.card,
+                  pressed && styles.cardPressed,
+                ]}
+                onPress={() =>
+                  router.push({
+                    pathname: "/pokemon/[name]",
+                    params: {
+                      name: item.name,
+                    },
+                  })
+                }
+              >
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={{ uri: imageUrl }}
+                    style={styles.image}
+                  />
+                </View>
+
+                <View style={styles.cardInfo}>
+                  <Text style={styles.pokemonId}>
+                    #{pokemonId}
+                  </Text>
+
+                  <Text style={styles.pokemonName}>
+                    {item.name}
+                  </Text>
+
+                  <Text style={styles.viewDetails}>
+                    Ver detalles →
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          }}
+        />
       )}
-      <FlatList
-        data={filteredPokemons}
-        keyExtractor={(item) => item.name}
-        renderItem={({ item }) => {
-          const pokemonId = item.url
-            .split("/")
-            .filter((part) => part !== "")
-            .pop();
-
-          const imageUrl =
-            "https://raw.githubusercontent.com/PokeAPI/sprites/master/" +
-            "sprites/pokemon/" +
-            pokemonId +
-            ".png";
-
-          return (
-            <Pressable
-              style={styles.card}
-              onPress={() =>
-                router.push({
-                  pathname: "/pokemon/[name]",
-                  params: {
-                    name: item.name,
-                  },
-                })
-              }
-            >
-              <Image
-                source={{ uri: imageUrl }}
-                style={styles.image}
-              />
-
-              <Text style={styles.pokemonName}>
-                {item.name}
-              </Text>
-            </Pressable>
-          );
-        }}
-      />
     </View>
   );
 }
@@ -104,65 +128,137 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    paddingTop: 60,
+    backgroundColor: "#f5f6fa",
+    paddingHorizontal: 20,
+    paddingTop: 55,
   },
 
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#f5f6fa",
     padding: 20,
   },
 
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
+  header: {
     marginBottom: 20,
   },
 
-  message: {
-    marginTop: 10,
-    fontSize: 16,
+  title: {
+    fontSize: 36,
+    fontWeight: "bold",
+    color: "#222222",
   },
 
-  error: {
+  subtitle: {
+    marginTop: 5,
     fontSize: 16,
-    textAlign: "center",
+    color: "#777777",
   },
 
   search: {
-    height: 50,
+    height: 52,
+    backgroundColor: "#ffffff",
     borderWidth: 1,
-    borderColor: "#cccccc",
-    borderRadius: 10,
-    paddingHorizontal: 15,
+    borderColor: "#dddddd",
+    borderRadius: 14,
+    paddingHorizontal: 16,
     marginBottom: 20,
     fontSize: 16,
+    color: "#222222",
+  },
+
+  list: {
+    paddingBottom: 30,
   },
 
   card: {
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#ffffff",
+    borderRadius: 18,
     padding: 12,
-    marginBottom: 10,
-    borderRadius: 10,
-    backgroundColor: "#eeeeee",
+    marginBottom: 14,
+
+    borderWidth: 1,
+    borderColor: "#e5e5e5",
+
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+
+    elevation: 3,
+  },
+
+  cardPressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.98 }],
+  },
+
+  imageContainer: {
+    width: 90,
+    height: 90,
+    borderRadius: 15,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 15,
   },
 
   image: {
-    width: 70,
-    height: 70,
-    marginRight: 15,
+    width: 85,
+    height: 85,
   },
-  noResults: {
-    textAlign: "center",
-    fontSize: 16,
-    marginTop: 20,
+
+  cardInfo: {
+    flex: 1,
   },
+
+  pokemonId: {
+    fontSize: 13,
+    fontWeight: "bold",
+    color: "#999999",
+    marginBottom: 3,
+  },
+
   pokemonName: {
-    fontSize: 18,
-    fontWeight: "600",
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#222222",
     textTransform: "capitalize",
+  },
+
+  viewDetails: {
+    marginTop: 6,
+    fontSize: 13,
+    color: "#777777",
+  },
+
+  noResultsContainer: {
+    alignItems: "center",
+    marginTop: 40,
+  },
+
+  noResults: {
+    fontSize: 17,
+    color: "#777777",
+    textAlign: "center",
+  },
+
+  message: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#555555",
+  },
+
+  error: {
+    fontSize: 16,
+    color: "#cc0000",
+    textAlign: "center",
   },
 });
